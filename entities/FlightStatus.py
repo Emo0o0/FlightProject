@@ -1,0 +1,2 @@
+class FlightStatus:
+    pass

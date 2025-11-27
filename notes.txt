@@ -1,0 +1,27 @@
+Flight Booking System
+
+users:
+Search for available flights
+Book tickets
+View their bookings and payment status
+Manage basic flight and airport data
+
+
+roles:
+Admin: Manages flights, airports, and airlines.
+User/Passenger: Searches flights, books tickets, views reservations.
+
+functionalities
+Passenger:
+Register and log in
+Search flights by origin, destination, and date
+Book flights (may include multiple flights)
+View bookings and payments
+Refund and flight cancellation?
+
+Admin:
+Add/edit flights, airlines, airports
+Manage passengers and tickets
+View all transactions
+
+

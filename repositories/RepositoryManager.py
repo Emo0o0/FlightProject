@@ -21,6 +21,11 @@ class RepositoryManager:
         self.connect().commit()
         return cur
 
+    def query(self, query, params=()):
+        cur = self.cursor()
+        cur.execute(query, params)
+        return cur
+
     def close(self):
         if self.conn:
             self.conn.close()

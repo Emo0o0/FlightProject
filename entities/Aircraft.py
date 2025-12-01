@@ -8,7 +8,7 @@ class Aircraft:
     def __init__(
         self,
         id: Optional[int],
-        aircraft_type: AircraftType,
+        aircraft_type: "AircraftType",
         registration_number: str,
         total_seats: int,
         manufacture_year: int,

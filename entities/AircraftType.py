@@ -9,7 +9,7 @@ class AircraftType:
         self,
         id: Optional[id],
         model: str,
-        manufacturer: Manufacturer,
+        manufacturer: "Manufacturer",
         engine_count: int,
         engine_type: str,
         range_km: int,

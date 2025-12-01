@@ -1,9 +1,11 @@
 import sqlite3
 
+from Flight_Project.entities.AircraftType import AircraftType
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
+from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
-class AircraftTypesRepository:
+class AircraftTypesRepository(BaseRepository[AircraftType]):
     def __init__(self, db: RepositoryManager):
         self.db = db
 

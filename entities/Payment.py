@@ -1,2 +1,21 @@
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from entities.Booking import Booking
+    from entities.PaymentMethod import PaymentMethod
+
+
 class Payment:
-    pass
+    def __init__(
+        self,
+        id: Optional[int],
+        booking: "Booking",
+        amount: float,
+        payment_method: "PaymentMethod",
+        paid_at: str,
+    ):
+        self.id = id
+        self.booking = booking
+        self.amount = amount
+        self.payment_method = payment_method
+        self.paid_at = paid_at

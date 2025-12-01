@@ -1,5 +1,4 @@
-from ast import List
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 
 if TYPE_CHECKING:
@@ -11,14 +10,14 @@ class Booking:
     def __init__(
         self,
         id: Optional[int],
-        user: User,
+        user: "User",
         created_at: str,
         flights: Optional[List["Flight"]] = None,
     ):
         self.id = id
         self.user = user
         self.created_at = created_at
-        self.flights = flights
+        self.flights = flights or []
 
     def add_flight(self, flight: "Flight"):
         if flight not in self.flights:

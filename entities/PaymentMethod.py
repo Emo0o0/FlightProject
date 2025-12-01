@@ -1,2 +1,11 @@
+from typing import Optional
+
+
 class PaymentMethod:
-    pass
+    def __init__(
+        self,
+        id: Optional[int],
+        method: str,
+    ):
+        self.id = id
+        self.method = method

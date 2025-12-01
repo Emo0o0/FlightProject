@@ -1,9 +1,11 @@
 import sqlite3
 
+from Flight_Project.entities.IATACode import IATACode
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
+from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
-class IATACodesRepository:
+class IATACodesRepository(BaseRepository[IATACode]):
     def __init__(self, db: RepositoryManager):
         self.db = db
 

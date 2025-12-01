@@ -1,9 +1,11 @@
 import sqlite3
 
+from Flight_Project.entities.Payment import Payment
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
+from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
-class PaymentsRepository:
+class PaymentsRepository(BaseRepository[Payment]):
     def __init__(self, db: RepositoryManager):
         self.db = db
 

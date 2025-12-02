@@ -7,7 +7,6 @@ if TYPE_CHECKING:
 class User:
     def __init__(
         self,
-        id: Optional[int],
         email: str,
         password: str,
         first_name: str,
@@ -17,6 +16,7 @@ class User:
         date_of_birth: str,
         passport_number: str,
         created_at: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.email = email
@@ -28,3 +28,6 @@ class User:
         self.date_of_birth = date_of_birth
         self.passport_number = passport_number
         self.created_at = created_at
+
+    def __repr__(self):
+        return f"User: id = {self.id}, name = {self.first_name} {self.last_name}"

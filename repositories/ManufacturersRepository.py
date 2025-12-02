@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Any, List, Tuple
 
 from Flight_Project.entities.Manufacturer import Manufacturer
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
@@ -16,3 +17,17 @@ class ManufacturersRepository(BaseRepository[Manufacturer]):
                     name TEXT NOT NULL
                 )"""
         )
+
+    def _to_entity(self, row: Tuple) -> Manufacturer:
+        return Manufacturer(
+            id=row[0],
+            name=row[1],
+        )
+
+    def _to_tuple(self, manufacturer: Manufacturer) -> Tuple[Any, ...]:
+        return (manufacturer.name,)
+
+    def _get_insert_columns(self) -> List[str]:
+        return [
+            "name",
+        ]

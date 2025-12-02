@@ -1,13 +1,18 @@
 import sqlite3
+from typing import Any, List, Tuple
 
 from Flight_Project.entities.Aircraft import Aircraft
+from Flight_Project.repositories.AircraftTypesRepository import AircraftTypesRepository
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
 class AircraftsRepository(BaseRepository[Aircraft]):
-    def __init__(self, db: RepositoryManager):
+    def __init__(
+        self, db: RepositoryManager, aircraft_types_repo: AircraftTypesRepository
+    ):
         self.db = db
+        self.aircraft_types_repo = aircraft_types_repo
 
     def create_table(self):
         self.db.execute(
@@ -21,3 +26,31 @@ class AircraftsRepository(BaseRepository[Aircraft]):
                         ON UPDATE CASCADE ON DELETE RESTRICT
                 )"""
         )
+
+    def _to_entity(self, row: Tuple) -> Aircraft:
+        aircraft_type = self.aircraft_types_repo.fetch_one(row[1])
+        return Aircraft(
+            id=row[0],
+            aircraft_type=aircraft_type,
+            registration_number=row[2],
+            total_seats=row[3],
+            manufacture_year=row[4],
+        )
+
+    def _to_tuple(self, aircraft: Aircraft) -> Tuple[Any, ...]:
+        return (
+            aircraft.id,
+            aircraft.aircraft_type.id,
+            aircraft.registration_number,
+            aircraft.total_seats,
+            aircraft.manufacture_year,
+        )
+
+    def _get_insert_columns(self) -> List[str]:
+        return [
+            "id",
+            "aircraft_type_id",
+            "registration_number",
+            "total_seats",
+            "manufacture_year",
+        ]

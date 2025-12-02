@@ -19,7 +19,6 @@ class CountriesRepository(BaseRepository[Country]):
                 )"""
         )
 
-    # TODO add country code
     def _to_entity(self, row: Tuple) -> Country:
         return Country(
             id=row[0],
@@ -28,7 +27,13 @@ class CountriesRepository(BaseRepository[Country]):
         )
 
     def _to_tuple(self, country: Country) -> Tuple[Any, ...]:
-        return (country.name, country.country_code)
+        return (
+            country.name,
+            country.country_code,
+        )
 
     def _get_insert_columns(self) -> List[str]:
-        return ["name", "country_code"]
+        return [
+            "name",
+            "country_code",
+        ]

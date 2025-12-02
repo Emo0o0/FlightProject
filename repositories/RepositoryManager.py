@@ -26,6 +26,9 @@ class RepositoryManager:
         cur.execute(query, params)
         return cur
 
+    def initiate_tables(self):
+        pass
+
     def close(self):
         if self.conn:
             self.conn.close()

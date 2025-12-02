@@ -10,12 +10,18 @@ class Booking:
     def __init__(
         self,
         id: Optional[int],
+        booking_reference,
         user: "User",
+        number_of_passengers,
+        total_amount,
         created_at: str,
         flights: Optional[List["Flight"]] = None,
     ):
         self.id = id
+        self.booking_reference = booking_reference
         self.user = user
+        self.number_of_passengers = number_of_passengers
+        self.total_amount = total_amount
         self.created_at = created_at
         self.flights = flights or []
 

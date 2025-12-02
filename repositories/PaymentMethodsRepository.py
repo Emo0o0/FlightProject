@@ -1,4 +1,5 @@
 import sqlite3
+from typing import Any, List, Tuple
 
 from Flight_Project.entities.PaymentMethod import PaymentMethod
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
@@ -16,3 +17,21 @@ class PaymentMethodsRepository(BaseRepository[PaymentMethod]):
                     method TEXT NOT NULL UNIQUE
                 )"""
         )
+
+    def _to_entity(self, row: Tuple) -> PaymentMethod:
+        return PaymentMethod(
+            id=row[0],
+            method=row[1],
+        )
+
+    def _to_tuple(self, payment_method: PaymentMethod) -> Tuple[Any, ...]:
+        return (
+            payment_method.id,
+            payment_method.method,
+        )
+
+    def _get_insert_columns(self) -> List[str]:
+        return [
+            "id",
+            "method",
+        ]

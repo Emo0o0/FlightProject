@@ -9,12 +9,12 @@ if TYPE_CHECKING:
 class Booking:
     def __init__(
         self,
-        id: Optional[int],
         booking_reference,
         user: "User",
         number_of_passengers,
         total_amount,
         created_at: str,
+        id: Optional[int] = None,
         flights: Optional[List["Flight"]] = None,
     ):
         self.id = id

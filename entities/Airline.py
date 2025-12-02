@@ -6,7 +6,6 @@ from Flight_Project.entities import City, Country, IATACode
 class Airline:
     def __init__(
         self,
-        id: Optional[int],
         name: str,
         iata_code: IATACode,
         email: str,
@@ -15,6 +14,7 @@ class Airline:
         headquarters: City,
         fleet_size: int,
         founded_year: int,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.name = name

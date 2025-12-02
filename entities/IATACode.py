@@ -4,8 +4,8 @@ from typing import Optional
 class IATACode:
     def __init__(
         self,
-        id: Optional[int],
         code: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.code = code

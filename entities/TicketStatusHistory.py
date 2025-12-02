@@ -7,12 +7,12 @@ if TYPE_CHECKING:
 class TicketStatusHistory:
     def __init__(
         self,
-        id: Optional[int],
         ticket: "Ticket",
         old_status: str,
         new_status: str,
         changed_at: str,
         notes: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.ticket = ticket

@@ -7,13 +7,13 @@ if TYPE_CHECKING:
 class AircraftType:
     def __init__(
         self,
-        id: Optional[id],
         model: str,
         manufacturer: "Manufacturer",
         engine_count: int,
         engine_type: str,
         range_km: int,
         cruise_speed_kmh: int,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.model = model

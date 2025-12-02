@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 class Flight:
     def __init__(
         self,
-        id: Optional[int],
         flight_number: str,
         airline: "Airline",
         aircraft: "Aircraft",
@@ -29,6 +28,7 @@ class Flight:
         departure_terminal: str,
         arrival_gate: str,
         arrival_terminal: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.flight_number = flight_number

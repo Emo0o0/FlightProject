@@ -8,11 +8,11 @@ if TYPE_CHECKING:
 class Payment:
     def __init__(
         self,
-        id: Optional[int],
         booking: "Booking",
         amount: float,
         payment_method: "PaymentMethod",
         paid_at: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.booking = booking

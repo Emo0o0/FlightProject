@@ -1,13 +1,26 @@
 import sqlite3
+from typing import Any, List, Tuple
 
 from Flight_Project.entities.Ticket import Ticket
+from Flight_Project.repositories.UsersRepository import UsersRepository
+from Flight_Project.repositories.BookingsRepository import BookingsRepository
+from Flight_Project.repositories.FlightsRepository import FlightsRepository
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
 class TicketsRepository(BaseRepository[Ticket]):
-    def __init__(self, db: RepositoryManager):
+    def __init__(
+        self,
+        db: RepositoryManager,
+        bookings_repo: BookingsRepository,
+        flights_repo: FlightsRepository,
+        users_repo: UsersRepository,
+    ):
         self.db = db
+        self.bookings_repo = bookings_repo
+        self.flights_repo = flights_repo
+        self.users_repo = users_repo
 
     def create_table(self):
         self.db.execute(
@@ -37,3 +50,57 @@ class TicketsRepository(BaseRepository[Ticket]):
         self.db.execute(
             """CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_ticket_number ON tickets(ticket_number)"""
         )
+
+    def _to_entity(self, row: Tuple) -> Ticket:
+        booking = self.bookings_repo.fetch_one(row[2])
+        flight = self.flights_repo.fetch_one(row[3])
+        user = self.users_repo.fetch_one(row[4])
+        return Ticket(
+            id=row[0],
+            ticket_number=row[1],
+            booking=booking,
+            flight=flight,
+            user=user,
+            seat_number=row[5],
+            ticket_class=row[6],
+            ticket_status=row[7],
+            issued_at=row[8],
+            checked_in_at=row[9],
+            boarded_at=row[10],
+            cancelled_at=row[11],
+            no_show_at=row[12],
+        )
+
+    def _to_tuple(self, ticket: Ticket) -> Tuple[Any, ...]:
+        return (
+            ticket.id,
+            ticket.ticket_number,
+            ticket.booking.id,
+            ticket.flight.id,
+            ticket.user.id,
+            ticket.seat_number,
+            ticket.ticket_class,
+            ticket.ticket_status,
+            ticket.issued_at,
+            ticket.checked_in_at,
+            ticket.boarded_at,
+            ticket.cancelled_at,
+            ticket.no_show_at,
+        )
+
+    def _get_insert_columns(self) -> List[str]:
+        return [
+            "id",
+            "ticket_number",
+            "booking_id",
+            "flight_id",
+            "user_id",
+            "seat_number",
+            "ticket_class",
+            "ticket_status",
+            "issued_at",
+            "checked_in_at",
+            "boarded_at",
+            "cancelled_at",
+            "no_show_at",
+        ]

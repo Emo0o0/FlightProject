@@ -8,12 +8,12 @@ if TYPE_CHECKING:
 class Review:
     def __init__(
         self,
-        id: Optional[int],
         user: "User",
         flight: "Flight",
         rating: int,
         description: str,
         created_at: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.user = user

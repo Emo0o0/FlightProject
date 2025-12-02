@@ -9,7 +9,6 @@ if TYPE_CHECKING:
 class Ticket:
     def __init__(
         self,
-        id: Optional[int],
         ticket_number: str,
         booking: "Booking",
         flight: "Flight",
@@ -22,6 +21,7 @@ class Ticket:
         boarded_at: str,
         cancelled_at: str,
         no_show_at: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.ticket_number = ticket_number

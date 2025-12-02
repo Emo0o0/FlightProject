@@ -8,11 +8,16 @@ if TYPE_CHECKING:
 class FlightStatusHistory:
     def __init__(
         self,
-        id: Optional[int],
         flight: "Flight",
         old_status: "FlightStatus",
         new_status: "FlightStatus",
         changed_at: str,
         notes: str,
+        id: Optional[int] = None,
     ):
-        pass
+        self.id = id
+        self.flight = flight
+        self.old_status = old_status
+        self.new_status = new_status
+        self.changed_at = changed_at
+        self.notes = notes

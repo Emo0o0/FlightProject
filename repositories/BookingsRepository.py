@@ -4,11 +4,11 @@ from typing import Any, List, Tuple
 from Flight_Project.entities.Booking import Booking
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.BaseRepository import BaseRepository
-from Flight_Project.repositories.UsersRepository import UserRepository
+from Flight_Project.repositories.UsersRepository import UsersRepository
 
 
 class BookingsRepository(BaseRepository[Booking]):
-    def __init__(self, db: RepositoryManager, users_repo: UserRepository):
+    def __init__(self, db: RepositoryManager, users_repo: UsersRepository):
         self.db = db
         self.users_repo = users_repo
 

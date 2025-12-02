@@ -7,7 +7,7 @@ from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.BaseRepository import BaseRepository
 
 
-class UserRepository(BaseRepository[User]):
+class UsersRepository(BaseRepository[User]):
     def __init__(self, db: RepositoryManager, countries_repo: CountriesRepository):
         super().__init__(db, "users")
         self.countries_repo = countries_repo

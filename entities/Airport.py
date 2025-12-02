@@ -6,13 +6,13 @@ from Flight_Project.entities import City, Country, IATACode
 class Airport:
     def __init__(
         self,
-        id: Optional[int],
         name: str,
         iata_code: IATACode,
         country: Country,
         city: City,
         timezone: str,
         elevation: str,
+        id: Optional[int] = None,
     ):
         self.id = id
         self.name = name

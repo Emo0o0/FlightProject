@@ -5,14 +5,14 @@ from Flight_Project.entities.Review import Review
 from Flight_Project.repositories.FlightsRepository import FlightsRepository
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.BaseRepository import BaseRepository
-from Flight_Project.repositories.UsersRepository import UserRepository
+from Flight_Project.repositories.UsersRepository import UsersRepository
 
 
 class ReviewsRepository(BaseRepository[Review]):
     def __init__(
         self,
         db: RepositoryManager,
-        users_repo: UserRepository,
+        users_repo: UsersRepository,
         flights_repo: FlightsRepository,
     ):
         self.db = db

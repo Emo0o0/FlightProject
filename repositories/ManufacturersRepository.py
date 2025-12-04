@@ -8,7 +8,7 @@ from Flight_Project.repositories.BaseRepository import BaseRepository
 
 class ManufacturersRepository(BaseRepository[Manufacturer]):
     def __init__(self, db: RepositoryManager):
-        self.db = db
+        super().__init__(db, "manufacturers")
 
     def create_table(self):
         self.db.execute(

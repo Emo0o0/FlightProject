@@ -1,6 +1,8 @@
 from typing import Optional
 
-from Flight_Project.entities import City, Country, IATACode
+from Flight_Project.entities.City import City
+from Flight_Project.entities.Country import Country
+from Flight_Project.entities.IATACode import IATACode
 
 
 class Airport:

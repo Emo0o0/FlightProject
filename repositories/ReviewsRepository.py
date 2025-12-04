@@ -15,7 +15,7 @@ class ReviewsRepository(BaseRepository[Review]):
         users_repo: UsersRepository,
         flights_repo: FlightsRepository,
     ):
-        self.db = db
+        super().__init__(db, "reviews")
         self.users_repo = users_repo
         self.flights_repo = flights_repo
 
@@ -35,6 +35,17 @@ class ReviewsRepository(BaseRepository[Review]):
                 )"""
         )
 
+    def fetch_user_reviews(self, user_id):
+        rows = self.db.query(
+            """
+            SELECT *
+            FROM reviews
+            WHERE user_id = ?
+            """,
+            (user_id,),
+        ).fetchall()
+        return [self._to_entity(row) for row in rows]
+
     def _to_entity(self, row: Tuple) -> Review:
         user = self.users_repo.fetch_one(row[1])
         flight = self.flights_repo.fetch_one(row[2])
@@ -42,18 +53,25 @@ class ReviewsRepository(BaseRepository[Review]):
             id=row[0],
             user=user,
             flight=flight,
-            description=row[3],
-            created_at=row[4],
+            rating=row[3],
+            description=row[4],
+            created_at=row[5],
         )
 
     def _to_tuple(self, review: Review) -> Tuple[Any, ...]:
         return (
-            review.id,
             review.user.id,
             review.flight.id,
+            review.rating,
             review.description,
             review.created_at,
         )
 
     def _get_insert_columns(self) -> List[str]:
-        return ["id", "user_id", "flight_id", "description", "created_at"]
+        return [
+            "user_id",
+            "flight_id",
+            "rating",
+            "description",
+            "created_at",
+        ]

@@ -8,7 +8,7 @@ from Flight_Project.repositories.BaseRepository import BaseRepository
 
 class FlightStatusesRepository(BaseRepository[FlightStatus]):
     def __init__(self, db: RepositoryManager):
-        self.db = db
+        super().__init__(db, "flight_statuses")
 
     def create_table(self):
         self.db.execute(
@@ -25,13 +25,9 @@ class FlightStatusesRepository(BaseRepository[FlightStatus]):
         )
 
     def _to_tuple(self, flight_status: FlightStatus) -> Tuple[Any, ...]:
-        return (
-            flight_status.id,
-            flight_status.status,
-        )
+        return (flight_status.status,)
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "status",
         ]

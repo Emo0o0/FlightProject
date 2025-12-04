@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING, Optional
 
-if TYPE_CHECKING:
-    from Flight_Project.entities.Country import Country
+from Flight_Project.entities.Country import Country
+
+# if TYPE_CHECKING:
+# from Flight_Project.entities.Country import Country
 
 
 class City:

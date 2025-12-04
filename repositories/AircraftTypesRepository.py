@@ -1,6 +1,5 @@
-from ast import Tuple
 import sqlite3
-from typing import Any, List
+from typing import Any, List, Tuple
 
 from Flight_Project.entities.AircraftType import AircraftType
 from Flight_Project.repositories.ManufacturersRepository import ManufacturersRepository
@@ -12,7 +11,7 @@ class AircraftTypesRepository(BaseRepository[AircraftType]):
     def __init__(
         self, db: RepositoryManager, manufacturer_repo: ManufacturersRepository
     ):
-        self.db = db
+        super().__init__(db, "aircraft_types")
         self.manufacturer_repo = manufacturer_repo
 
     def create_table(self):
@@ -44,7 +43,6 @@ class AircraftTypesRepository(BaseRepository[AircraftType]):
 
     def _to_tuple(self, aircraft_type: AircraftType) -> Tuple[Any, ...]:
         return (
-            aircraft_type.id,
             aircraft_type.model,
             aircraft_type.manufacturer.id,
             aircraft_type.engine_count,
@@ -55,7 +53,6 @@ class AircraftTypesRepository(BaseRepository[AircraftType]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "model",
             "manufacturer_id",
             "engine_count",

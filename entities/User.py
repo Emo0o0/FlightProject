@@ -15,7 +15,7 @@ class User:
         nationality: "Country",
         date_of_birth: str,
         passport_number: str,
-        created_at: str,
+        created_at: Optional[str] = None,
         id: Optional[int] = None,
     ):
         self.id = id
@@ -27,7 +27,7 @@ class User:
         self.nationality = nationality
         self.date_of_birth = date_of_birth
         self.passport_number = passport_number
-        self.created_at = created_at
+        self.created_at = created_at or None
 
     def __repr__(self):
         return f"User: id = {self.id}, name = {self.first_name} {self.last_name}"

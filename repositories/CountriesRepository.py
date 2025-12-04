@@ -14,10 +14,21 @@ class CountriesRepository(BaseRepository[Country]):
         self.db.execute(
             """CREATE TABLE IF NOT EXISTS countries (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    country_code TEXT NOT NULL
+                    name TEXT UNIQUE NOT NULL,
+                    country_code TEXT UNIQUE NOT NULL
                 )"""
         )
+
+    def get_by_name(self, name: str) -> Country:
+        row = self.db.execute(
+            """
+            SELECT *
+            FROM countries
+            WHERE name = ?
+            """,
+            (name,),
+        ).fetchone()
+        return self._to_entity(row)
 
     def _to_entity(self, row: Tuple) -> Country:
         return Country(

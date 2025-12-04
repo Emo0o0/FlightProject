@@ -17,6 +17,7 @@ class FlightsStatusHistoryRepository(BaseRepository[FlightStatusHistory]):
         flights_repo: FlightsRepository,
         flights_status_repo: FlightStatusesRepository,
     ):
+        super().__init__(db, "flight_status_history")
         self.db = db
         self.flights_repo = flights_repo
         self.flights_status_repo = flights_status_repo
@@ -54,7 +55,6 @@ class FlightsStatusHistoryRepository(BaseRepository[FlightStatusHistory]):
 
     def _to_tuple(self, flight_status_history: FlightStatusHistory) -> Tuple[Any, ...]:
         return (
-            flight_status_history.id,
             flight_status_history.flight.id,
             flight_status_history.old_status.id,
             flight_status_history.new_status.id,
@@ -64,7 +64,6 @@ class FlightsStatusHistoryRepository(BaseRepository[FlightStatusHistory]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "flight_id",
             "old_status_id",
             "new_status_id",

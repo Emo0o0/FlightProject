@@ -17,7 +17,7 @@ class PaymentsRepository(BaseRepository[Payment]):
         bookings_repo: BookingsRepository,
         payment_methods_repo: PaymentMethodsRepository,
     ):
-        self.db = db
+        super().__init__(db, "payments")
         self.bookings_repo = bookings_repo
         self.payment_methods_repo = payment_methods_repo
 
@@ -49,7 +49,6 @@ class PaymentsRepository(BaseRepository[Payment]):
 
     def _to_tuple(self, payment: Payment) -> Tuple[Any, ...]:
         return (
-            payment.id,
             payment.booking.id,
             payment.amount,
             payment.payment_method.id,
@@ -57,4 +56,9 @@ class PaymentsRepository(BaseRepository[Payment]):
         )
 
     def _get_insert_columns(self) -> List[str]:
-        return ["id", "booking_id", "amount", "payment_method_id", "paid_at"]
+        return [
+            "booking_id",
+            "amount",
+            "payment_method_id",
+            "paid_at",
+        ]

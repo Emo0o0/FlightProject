@@ -4,6 +4,7 @@ from Flight_Project.repositories.CountriesRepository import CountriesRepository
 from Flight_Project.repositories.RepositoryManager import RepositoryManager
 from Flight_Project.repositories.UsersRepository import UsersRepository
 
+
 repo_manager = RepositoryManager()
 countries_repo = CountriesRepository(repo_manager)
 user_repo = UsersRepository(repo_manager, countries_repo)

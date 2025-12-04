@@ -9,7 +9,7 @@ from Flight_Project.repositories.BaseRepository import BaseRepository
 
 class CitiesRepository(BaseRepository[City]):
     def __init__(self, db: RepositoryManager, country_repo: CountriesRepository):
-        self.db = db
+        super().__init__(db, "cities")
         self.country_repo = country_repo
 
     def create_table(self):
@@ -34,14 +34,12 @@ class CitiesRepository(BaseRepository[City]):
 
     def _to_tuple(self, city: City) -> Tuple[Any, ...]:
         return (
-            city.id,
             city.name,
             city.country.id,
         )
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "name",
             "country_id",
         ]

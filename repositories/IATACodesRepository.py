@@ -8,7 +8,7 @@ from Flight_Project.repositories.BaseRepository import BaseRepository
 
 class IATACodesRepository(BaseRepository[IATACode]):
     def __init__(self, db: RepositoryManager):
-        self.db = db
+        super().__init__(db, "iata_codes")
 
     def create_table(self):
         self.db.execute(
@@ -25,13 +25,9 @@ class IATACodesRepository(BaseRepository[IATACode]):
         )
 
     def _to_tuple(self, iata_code: IATACode) -> Tuple[Any, ...]:
-        return (
-            iata_code.id,
-            iata_code.code,
-        )
+        return (iata_code.code,)
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "code",
         ]

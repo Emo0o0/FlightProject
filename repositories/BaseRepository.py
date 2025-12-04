@@ -33,7 +33,7 @@ class BaseRepository(Generic[T]):
         row = cursor.fetchone()
         return self._to_entity(row) if row else None
 
-    def save(self, entity: T) -> int:
+    def save(self, entity: T) -> T:
         columns = self._get_insert_columns()
         placeholders = ", ".join(["?"] * len(columns))
         columns_str = ", ".join(columns)
@@ -42,7 +42,13 @@ class BaseRepository(Generic[T]):
             f"INSERT INTO {self.table_name}({columns_str}) VALUES ({placeholders})",
             self._to_tuple(entity),
         )
-        return cursor.lastrowid
+
+        new_id = cursor.lastrowid
+
+        if new_id is not None:
+            entity.id = new_id
+
+        return entity
 
     def update(self, entity: T) -> None:
         columns = self._get_insert_columns()

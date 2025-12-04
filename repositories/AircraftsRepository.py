@@ -11,7 +11,7 @@ class AircraftsRepository(BaseRepository[Aircraft]):
     def __init__(
         self, db: RepositoryManager, aircraft_types_repo: AircraftTypesRepository
     ):
-        self.db = db
+        super().__init__(db, "aircrafts")
         self.aircraft_types_repo = aircraft_types_repo
 
     def create_table(self):
@@ -39,7 +39,6 @@ class AircraftsRepository(BaseRepository[Aircraft]):
 
     def _to_tuple(self, aircraft: Aircraft) -> Tuple[Any, ...]:
         return (
-            aircraft.id,
             aircraft.aircraft_type.id,
             aircraft.registration_number,
             aircraft.total_seats,
@@ -48,7 +47,6 @@ class AircraftsRepository(BaseRepository[Aircraft]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "aircraft_type_id",
             "registration_number",
             "total_seats",

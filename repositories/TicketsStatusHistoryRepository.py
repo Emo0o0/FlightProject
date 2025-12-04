@@ -9,7 +9,7 @@ from Flight_Project.repositories.TicketsRepository import TicketsRepository
 
 class TicketsStatusHistoryRepository(BaseRepository[TicketStatusHistory]):
     def __init__(self, db: RepositoryManager, tickets_repo: TicketsRepository):
-        self.db = db
+        super().__init__(db, "ticket_status_history")
         self.tickets_repo = tickets_repo
 
     def create_table(self):
@@ -40,7 +40,6 @@ class TicketsStatusHistoryRepository(BaseRepository[TicketStatusHistory]):
 
     def _to_tuple(self, ticket_status_history: TicketStatusHistory) -> Tuple[Any, ...]:
         return (
-            ticket_status_history.id,
             ticket_status_history.ticket.id,
             ticket_status_history.old_status,
             ticket_status_history.new_status,
@@ -50,7 +49,6 @@ class TicketsStatusHistoryRepository(BaseRepository[TicketStatusHistory]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "ticket_id",
             "old_status",
             "new_status",

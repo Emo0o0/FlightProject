@@ -18,7 +18,7 @@ class AirportsRepository(BaseRepository[Airport]):
         cities_repo: CitiesRepository,
         countries_repo: CountriesRepository,
     ):
-        self.db = db
+        super().__init__(db, "airports")
         self.iata_codes_repo = iata_codes_repo
         self.cities_repo = cities_repo
         self.countries_repo = countries_repo
@@ -49,7 +49,7 @@ class AirportsRepository(BaseRepository[Airport]):
     def _to_entity(self, row: Tuple) -> Airport:
         iata_code = self.iata_codes_repo.fetch_one(row[2])
         country = self.countries_repo.fetch_one(row[3])
-        city = self.countries_repo.fetch_one(row[4])
+        city = self.cities_repo.fetch_one(row[4])
         return Airport(
             id=row[0],
             name=row[1],
@@ -62,7 +62,6 @@ class AirportsRepository(BaseRepository[Airport]):
 
     def _to_tuple(self, airport: Airport) -> Tuple[Any, ...]:
         return (
-            airport.id,
             airport.name,
             airport.iata_code.id,
             airport.country.id,
@@ -73,7 +72,6 @@ class AirportsRepository(BaseRepository[Airport]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "name",
             "iata_code_id",
             "country_id",

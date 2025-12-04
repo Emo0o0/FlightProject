@@ -17,7 +17,7 @@ class TicketsRepository(BaseRepository[Ticket]):
         flights_repo: FlightsRepository,
         users_repo: UsersRepository,
     ):
-        self.db = db
+        super().__init__(db, "tickets")
         self.bookings_repo = bookings_repo
         self.flights_repo = flights_repo
         self.users_repo = users_repo
@@ -51,6 +51,17 @@ class TicketsRepository(BaseRepository[Ticket]):
             """CREATE UNIQUE INDEX IF NOT EXISTS idx_tickets_ticket_number ON tickets(ticket_number)"""
         )
 
+    def fetch_user_tickets(self, user_id):
+        rows = self.db.query(
+            """
+            SELECT *
+            FROM tickets t
+            WHERE t.user_id = ?
+            """,
+            (user_id,),
+        ).fetchall()
+        return [self._to_entity(row) for row in rows]
+
     def _to_entity(self, row: Tuple) -> Ticket:
         booking = self.bookings_repo.fetch_one(row[2])
         flight = self.flights_repo.fetch_one(row[3])
@@ -73,7 +84,6 @@ class TicketsRepository(BaseRepository[Ticket]):
 
     def _to_tuple(self, ticket: Ticket) -> Tuple[Any, ...]:
         return (
-            ticket.id,
             ticket.ticket_number,
             ticket.booking.id,
             ticket.flight.id,
@@ -90,7 +100,6 @@ class TicketsRepository(BaseRepository[Ticket]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "ticket_number",
             "booking_id",
             "flight_id",

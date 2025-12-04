@@ -8,7 +8,7 @@ from Flight_Project.repositories.BaseRepository import BaseRepository
 
 class PaymentMethodsRepository(BaseRepository[PaymentMethod]):
     def __init__(self, db: RepositoryManager):
-        self.db = db
+        super().__init__(db, "payment_methods")
 
     def create_table(self):
         self.db.execute(
@@ -25,13 +25,9 @@ class PaymentMethodsRepository(BaseRepository[PaymentMethod]):
         )
 
     def _to_tuple(self, payment_method: PaymentMethod) -> Tuple[Any, ...]:
-        return (
-            payment_method.id,
-            payment_method.method,
-        )
+        return (payment_method.method,)
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "method",
         ]

@@ -17,7 +17,7 @@ class AirlinesRepository(BaseRepository[Airline]):
         cities_repo: CitiesRepository,
         iata_codes_repo: IATACodesRepository,
     ):
-        self.db = db
+        super().__init__(db, "airlines")
         self.countries_repo = countries_repo
         self.cities_repo = cities_repo
         self.iata_codes_repo = iata_codes_repo
@@ -54,14 +54,13 @@ class AirlinesRepository(BaseRepository[Airline]):
             email=row[3],
             phone=row[4],
             country=country,
-            headquarters_city=headquarters_city,
+            headquarters=headquarters_city,
             fleet_size=row[7],
             founded_year=row[8],
         )
 
     def _to_tuple(self, airline: Airline) -> Tuple[Any, ...]:
         return (
-            airline.id,
             airline.name,
             airline.iata_code.id,
             airline.email,
@@ -74,7 +73,6 @@ class AirlinesRepository(BaseRepository[Airline]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "name",
             "iata_code_id",
             "email",

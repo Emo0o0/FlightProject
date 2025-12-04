@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:
     from entities.Airline import Airline
@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from entities.Airport import Airport
     from entities.FlightStatus import FlightStatus
     from entities.Booking import Booking
+    from entities.Amenity import Amenity
 
 
 class Flight:
@@ -29,6 +30,7 @@ class Flight:
         arrival_gate: str,
         arrival_terminal: str,
         id: Optional[int] = None,
+        amenities: Optional[List["Amenity"]] = None,
     ):
         self.id = id
         self.flight_number = flight_number
@@ -49,7 +51,12 @@ class Flight:
         self.arrival_gate = arrival_gate
         self.arrival_terminal = arrival_terminal
         self.bookings: list["Booking"] = []
+        self.amenities = amenities or []
 
     def add_booking(self, booking: "Booking"):
         if booking not in self.bookings:
             self.bookings.append(booking)
+
+    def add_amenity(self, amenity: "Amenity"):
+        if amenity not in self.amenities:
+            self.amenities.append(amenity)

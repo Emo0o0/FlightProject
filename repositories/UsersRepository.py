@@ -24,7 +24,7 @@ class UsersRepository(BaseRepository[User]):
                     nationality_id INTEGER NOT NULL,
                     date_of_birth TEXT NOT NULL,
                     passport_number TEXT NOT NULL UNIQUE,
-                    created_at DATE NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (nationality_id) REFERENCES countries(id)
                         ON UPDATE CASCADE
                         ON DELETE RESTRICT
@@ -35,6 +35,18 @@ class UsersRepository(BaseRepository[User]):
         self.db.execute(
             """CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)"""
         )
+
+    def find_by_email(self, email: str) -> User:
+        row = self.db.execute(
+            """
+            SELECT u.*
+            FROM users u
+            JOIN countries n ON n.id = u.nationality_id
+            WHERE u.email = ?
+            """,
+            (email,),
+        ).fetchone()
+        return self._to_entity(row)
 
     def _to_entity(self, row: Tuple) -> User:
         country = self.countries_repo.fetch_one(row[6])
@@ -53,7 +65,6 @@ class UsersRepository(BaseRepository[User]):
 
     def _to_tuple(self, user: User) -> Tuple[Any, ...]:
         return (
-            user.id,
             user.email,
             user.password,
             user.first_name,
@@ -67,7 +78,6 @@ class UsersRepository(BaseRepository[User]):
 
     def _get_insert_columns(self) -> List[str]:
         return (
-            "id",
             "email",
             "password",
             "first_name",

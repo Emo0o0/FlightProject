@@ -1,31 +1,43 @@
+from __future__ import annotations
 import sqlite3
-from typing import Any, List, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple
 
-from Flight_Project.entities.Flight import Flight
-from Flight_Project.repositories.AircraftsRepository import AircraftsRepository
-from Flight_Project.repositories.AirlinesRepository import AirlinesRepository
-from Flight_Project.repositories.AirportsRepository import AirportsRepository
 from Flight_Project.repositories.BaseRepository import BaseRepository
-from Flight_Project.repositories.FlightStatusesRepository import (
-    FlightStatusesRepository,
-)
-from Flight_Project.repositories.RepositoryManager import RepositoryManager
+
+if TYPE_CHECKING:
+    from Flight_Project.entities.Flight import Flight
+    from Flight_Project.repositories.AircraftsRepository import AircraftsRepository
+    from Flight_Project.repositories.AirlinesRepository import AirlinesRepository
+    from Flight_Project.repositories.AirportsRepository import AirportsRepository
+    from Flight_Project.repositories.BookingsRepository import BookingsRepository
+    from Flight_Project.repositories.FlightStatusesRepository import (
+        FlightStatusesRepository,
+    )
+    from Flight_Project.repositories.RepositoryManager import RepositoryManager
+    from Flight_Project.repositories.AmenitiesRepository import AmenitiesRepository
 
 
-class FlightsRepository(BaseRepository[Flight]):
+class FlightsRepository(BaseRepository["Flight"]):
     def __init__(
         self,
-        db: RepositoryManager,
-        airlines_repo: AirlinesRepository,
-        aircrafts_repo: AircraftsRepository,
-        airports_repo: AirportsRepository,
-        flights_status_repo: FlightStatusesRepository,
+        db: "RepositoryManager",
+        airlines_repo: "AirlinesRepository",
+        aircrafts_repo: "AircraftsRepository",
+        airports_repo: "AirportsRepository",
+        flights_status_repo: "FlightStatusesRepository",
+        amenities_repo: "AmenitiesRepository",
+        bookings_repo: Optional["BookingsRepository"] = None,
     ):
-        self.db = db
+        super().__init__(db, "flights")
         self.airlines_repo = airlines_repo
         self.aircrafts_repo = aircrafts_repo
         self.airports_repo = airports_repo
         self.flights_status_repo = flights_status_repo
+        self.amenities_repo = amenities_repo
+        self.bookings_repo = bookings_repo
+
+    def set_bookings_repo(self, bookings_repo: "BookingsRepository") -> None:
+        self.bookings_repo = bookings_repo
 
     def create_table(self):
         self.db.execute(
@@ -77,8 +89,84 @@ class FlightsRepository(BaseRepository[Flight]):
                 )"""
         )
 
-    # TODO HANDLE M:M
-    def _to_entity(self, row: Tuple) -> Flight:
+    def fetch_user_flights(self, user_id: int) -> List["Flight"]:
+        rows = self.db.query(
+            """
+            SELECT f.*
+            FROM bookings b
+            JOIN bookings_flights bf ON b.id = bf.booking_id
+            JOIN flights f ON bf.flight_id = f.id
+            WHERE b.user_id = ?
+            ORDER BY f.expected_departure_time DESC
+            """,
+            (user_id,),
+        ).fetchall()
+        return [self._to_entity(row) for row in rows]
+
+    def fetch_bookings_for_flight(self, flight_id: int):
+        rows = self.db.query(
+            """SELECT b.*
+                FROM bookings b
+                JOIN bookings_flights bf ON bf.booking_id = b.id
+                WHERE bf.flight_id = ?""",
+            (flight_id,),
+        ).fetchall()
+        return [self.bookings_repo._to_entity(row) for row in rows]
+
+    def fetch_amenities_for_flight(self, flight_id: int):
+        rows = self.db.query(
+            """
+            SELECT a.*
+            FROM amenities a
+            JOIN flight_amenities fa ON fa.amenity_id = a.id
+            WHERE bf.flight_id = ?
+            """,
+            (flight_id,),
+        ).fetchall()
+        return [self.amenities_repo._to_entity(row) for row in rows]
+
+    def fetch_flights_from_to(
+        self, city_from, city_to, passenger_count, departure_date
+    ):
+        rows = self.db.query(
+            """
+            SELECT f.*
+            FROM flights f
+            JOIN airports origin_airport ON origin_airport.id = f.origin_airport_id
+            JOIN cities origin_city ON origin_city.id = origin_airport.city_id
+            JOIN airports dest_airport ON dest_airport.id = f.destination_airport_id
+            JOIN cities dest_city ON dest_city.id = dest_airport.city_id
+            WHERE origin_city.name = ? AND dest_city.name = ? AND f.available_seats >= ? AND DATE(f.expected_departure_time) >= ?
+            """,
+            (city_from, city_to, passenger_count, departure_date),
+        ).fetchall()
+        return [self._to_entity(row) for row in rows]
+
+    def get_flight_by_flight_number(self, flight_number) -> Flight:
+        row = self.db.query(
+            """
+            SELECT *
+            FROM flights f
+            WHERE f.flight_number = ?
+            """,
+            (flight_number,),
+        ).fetchone()
+        return self._to_entity(row)
+
+    def save(self, flight: "Flight") -> "Flight":
+        super().save(flight)
+        for amenity in flight.amenities:
+            self.db.execute(
+                """
+                INSERT INTO flight_amenities (flight_id, amenity_id) VALUES (?,?)
+                """,
+                (flight.id, amenity.id),
+            )
+        return flight
+
+    def _to_entity(self, row: Tuple) -> "Flight":
+        from Flight_Project.entities.Flight import Flight
+
         airline = self.airlines_repo.fetch_one(row[2])
         aircraft = self.aircrafts_repo.fetch_one(row[3])
         origin_airport = self.airports_repo.fetch_one(row[4])
@@ -92,7 +180,7 @@ class FlightsRepository(BaseRepository[Flight]):
             origin_airport=origin_airport,
             destination_airport=destination_airport,
             expected_departure_time=row[6],
-            expected_departure_time=row[7],
+            expected_arrival_time=row[7],
             actual_departure_time=row[8],
             actual_arrival_time=row[9],
             total_seats=row[10],
@@ -105,9 +193,8 @@ class FlightsRepository(BaseRepository[Flight]):
             arrival_terminal=row[16],
         )
 
-    def _to_tuple(self, flight: Flight) -> Tuple[Any, ...]:
+    def _to_tuple(self, flight: "Flight") -> Tuple[Any, ...]:
         return (
-            flight.id,
             flight.flight_number,
             flight.airline.id,
             flight.aircraft.id,
@@ -129,7 +216,6 @@ class FlightsRepository(BaseRepository[Flight]):
 
     def _get_insert_columns(self) -> List[str]:
         return [
-            "id",
             "flight_number",
             "airline_id",
             "aircraft_id",
